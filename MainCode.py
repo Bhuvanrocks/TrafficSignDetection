@@ -10,7 +10,7 @@ font = cv2.FONT_HERSHEY_SIMPLEX
 ##############################################
 
 # IMPORT THE TRAINED MODEL
-model_path = r"D:\TrafficSignModel\TrafficModel.h5"
+model_path = r"path/model"
 if not model_path:
     raise FileNotFoundError(f"Model file '{model_path}' not found!")
 
@@ -46,7 +46,7 @@ def getClassName(classNo):
     return class_names[classNo] if 0 <= classNo < len(class_names) else "Unknown"
 
 # IMAGE PATH
-image_path = r"D:\TrafficSignDataset\Test\00093.png"  # Change this to your image path
+image_path = r"path/img"  # Change this to your image path
 
 # READ IMAGE
 imgOriginal = cv2.imread(image_path)
