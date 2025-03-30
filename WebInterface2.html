@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traffic Sign Recognition</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 600px;
+            margin-top: 50px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        .preview-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .preview-img {
+            width: 60%;
+            height: auto;
+            display: none;
+            margin-top: 15px;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+            padding: 5px;
+            background: #fff;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container text-center">
+    <h2 class="mb-4">Traffic Sign Recognition</h2>
+
+    <form id="uploadForm" action="/predict" method="post" enctype="multipart/form-data">
+        <input type="file" id="fileInput" name="file" class="form-control" accept="image/*" required>
+        
+        <!-- Centered Image Preview -->
+        <div class="preview-container">
+            <img id="preview" class="preview-img" alt="Image Preview">
+        </div>
+        
+        <button type="submit" class="btn btn-primary mt-3">Upload & Predict</button>
+    </form>
+
+    <h4 class="mt-4">Prediction:</h4>
+    <p id="result" class="alert alert-info" style="display: none;"></p>
+</div>
+
+<script>
+    // Show image preview before upload
+    document.getElementById('fileInput').addEventListener('change', function(event) {
+        let reader = new FileReader();
+        reader.onload = function() {
+            let img = document.getElementById('preview');
+            img.src = reader.result;
+            img.style.display = 'block';
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    });
+
+    // Handle form submission via AJAX to show result without page reload
+    $("#uploadForm").on("submit", function(event) {
+        event.preventDefault();
+        let formData = new FormData(this);
+
+        $.ajax({
+            type: "POST",
+            url: "/predict",
+            data: formData,
+            contentType: false,
+            processData: false,
+            beforeSend: function() {
+                $("#result").hide().text("Processing...").fadeIn();
+            },
+            success: function(response) {
+                $("#result").removeClass("alert-info").addClass("alert-success").text("Predicted Sign: " + response).fadeIn();
+            },
+            error: function() {
+                $("#result").removeClass("alert-info").addClass("alert-danger").text("Error processing image. Try again.").fadeIn();
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
